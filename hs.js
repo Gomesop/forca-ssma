@@ -44,7 +44,7 @@
     }
   ];
 
-  const estado = { jogador: null, concluiuPartida: false, contadorAnuncio: 0 };
+  const estado = { jogador: null, concluiuPartida: false, contadorAnuncio: 0, aoLiberar: null };
 
   /* ---------------- planilha ---------------- */
 
@@ -91,7 +91,9 @@
 
   function montarCadastro() {
     const tela = document.createElement('div');
-    tela.className = 'hs-tela hs-cadastro';
+    // nasce oculto: sem isto a tela cobre o jogo desde o carregamento e o formulário,
+    // ainda sem handler, faz submit nativo e recarrega a página
+    tela.className = 'hs-tela hs-cadastro hidden';
     tela.id = 'hs-cadastro';
     tela.innerHTML =
       '<div class="hs-card">' +
@@ -153,42 +155,12 @@
 
     exigirCadastro: function (cb) {
       if (estado.jogador) { cb && cb(); return; }
-      const tela = document.getElementById('hs-cadastro');
-      tela.classList.remove('hidden');
-      const form = document.getElementById('hs-form');
-
-      // Os jogos usam `* { user-select: none }` e capturam teclado no window.
-      // Sem isto, o clique não dá foco ao campo e o jogador não consegue digitar.
-      const campos = ['hs-nome', 'hs-email', 'hs-empresa'].map(function (id) { return document.getElementById(id); });
-      campos.forEach(function (campo) {
-        if (campo.dataset.hsFoco) return;
-        campo.dataset.hsFoco = '1';
-        ['mousedown', 'touchstart', 'pointerdown'].forEach(function (evt) {
-          campo.addEventListener(evt, function () { setTimeout(function () { campo.focus(); }, 0); });
-        });
-        // impede que o jogo receba as teclas digitadas no cadastro
-        campo.addEventListener('keydown', function (ev) { ev.stopPropagation(); });
-      });
-      setTimeout(function () { campos[0].focus(); }, 60);
-      form.onsubmit = function (ev) {
-        ev.preventDefault();
-        const nome = document.getElementById('hs-nome').value.trim();
-        const email = document.getElementById('hs-email').value.trim();
-        const empresa = document.getElementById('hs-empresa').value.trim();
-        let ok = true;
-        const eNome = document.getElementById('hs-erro-nome');
-        const eMail = document.getElementById('hs-erro-email');
-        if (nome.length < 3 || nome.split(/\s+/).length < 2) { eNome.classList.remove('hidden'); ok = false; }
-        else eNome.classList.add('hidden');
-        if (!validarEmail(email)) { eMail.classList.remove('hidden'); ok = false; }
-        else eMail.classList.add('hidden');
-        if (!ok) return;
-
-        estado.jogador = { nome: nome, email: email, empresa: empresa };
-        enviarPlanilha({ nome: nome, email: email, modo: empresa, etapa: 'Inscrição' });
-        tela.classList.add('hidden');
-        cb && cb();
-      };
+      estado.aoLiberar = cb || null;
+      document.getElementById('hs-cadastro').classList.remove('hidden');
+      setTimeout(function () {
+        const primeiro = document.getElementById('hs-nome');
+        if (primeiro) primeiro.focus();
+      }, 60);
     },
 
     anuncio: function (cb) {
@@ -271,9 +243,52 @@
     jogador: function () { return estado.jogador; }
   };
 
+  /* O formulário é preparado já na montagem: assim ele nunca faz submit nativo,
+     mesmo que a tela apareça antes de o jogo chamar exigirCadastro. */
+  function prepararFormulario() {
+    const tela = document.getElementById('hs-cadastro');
+    const form = document.getElementById('hs-form');
+    if (!form) return;
+
+    // Os jogos usam `* { user-select: none }` e capturam teclado no window:
+    // sem isto o clique não dá foco ao campo e o jogador não consegue digitar.
+    ['hs-nome', 'hs-email', 'hs-empresa'].forEach(function (id) {
+      const campo = document.getElementById(id);
+      if (!campo) return;
+      ['mousedown', 'touchstart', 'pointerdown'].forEach(function (evt) {
+        campo.addEventListener(evt, function () { setTimeout(function () { campo.focus(); }, 0); });
+      });
+      campo.addEventListener('keydown', function (ev) { ev.stopPropagation(); });
+    });
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      const nome = document.getElementById('hs-nome').value.trim();
+      const email = document.getElementById('hs-email').value.trim();
+      const empresa = document.getElementById('hs-empresa').value.trim();
+      let ok = true;
+      const eNome = document.getElementById('hs-erro-nome');
+      const eMail = document.getElementById('hs-erro-email');
+      if (nome.length < 3 || nome.split(/\s+/).length < 2) { eNome.classList.remove('hidden'); ok = false; }
+      else eNome.classList.add('hidden');
+      if (!validarEmail(email)) { eMail.classList.remove('hidden'); ok = false; }
+      else eMail.classList.add('hidden');
+      if (!ok) return;
+
+      estado.jogador = { nome: nome, email: email, empresa: empresa };
+      enviarPlanilha({ nome: nome, email: email, modo: empresa, etapa: 'Inscrição' });
+      tela.classList.add('hidden');
+      document.activeElement && document.activeElement.blur();
+      const cb = estado.aoLiberar;
+      estado.aoLiberar = null;
+      if (cb) cb();
+    });
+  }
+
   function iniciar() {
     montarMarca();
     montarCadastro();
+    prepararFormulario();
     montarAnuncio();
     HS.pronto = true;
     document.dispatchEvent(new CustomEvent('hs-pronto'));
