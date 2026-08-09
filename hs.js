@@ -109,7 +109,7 @@
       '<small class="hs-erro hidden" id="hs-erro-email">Informe um e-mail válido.</small>' +
       '<label for="hs-empresa">Empresa <span class="hs-opc">(opcional)</span></label>' +
       '<input id="hs-empresa" type="text" autocomplete="organization" placeholder="Onde você trabalha">' +
-      '<button type="submit" class="hs-btn">Começar o treinamento</button>' +
+      '<button type="button" id="hs-enviar" class="hs-btn">Começar o treinamento</button>' +
       '<p class="hs-nota">Seus dados são usados apenas para emitir o resultado do treinamento.</p>' +
       '</form></div>';
     document.body.appendChild(tela);
@@ -261,8 +261,10 @@
       campo.addEventListener('keydown', function (ev) { ev.stopPropagation(); });
     });
 
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
+    // O envio é por clique num botão comum: submit de formulário se comportou de
+    // forma diferente entre os jogos e chegou a recarregar a página.
+    function enviarCadastro(ev) {
+      if (ev) ev.preventDefault();
       const nome = document.getElementById('hs-nome').value.trim();
       const email = document.getElementById('hs-email').value.trim();
       const empresa = document.getElementById('hs-empresa').value.trim();
@@ -282,6 +284,17 @@
       const cb = estado.aoLiberar;
       estado.aoLiberar = null;
       if (cb) cb();
+    }
+
+    document.getElementById('hs-enviar').addEventListener('click', enviarCadastro);
+    form.addEventListener('submit', enviarCadastro);
+    // Enter em qualquer campo também envia
+    ['hs-nome', 'hs-email', 'hs-empresa'].forEach(function (id) {
+      const campo = document.getElementById(id);
+      if (!campo) return;
+      campo.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter') { ev.preventDefault(); enviarCadastro(); }
+      });
     });
   }
 
