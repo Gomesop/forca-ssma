@@ -12,6 +12,25 @@
 
 .hidden { display: none !important; }
 
+/* ---------- encaixe no layout do jogo ----------
+   Os jogos usam `height: 100vh` no container e `overflow: hidden` no body.
+   Com o topo e o rodapé da Hora da Segurança somados, o conteúdo passava da tela
+   e os controles de toque ficavam cortados no celular. Aqui o body vira uma coluna
+   e o jogo ocupa exatamente o espaço que sobra. */
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 100dvh;
+}
+body > #app-container {
+  flex: 1 1 auto;
+  height: auto !important;
+  min-height: 0;
+}
+.hs-topo, .hs-rodape { flex: 0 0 auto; }
+
 /* ---------- topo e rodapé ---------- */
 
 .hs-topo {
@@ -163,6 +182,17 @@
 
 @media (max-width: 640px) {
   .hs-card input { font-size: 16px; }
+}
+
+/* No celular a marca fica compacta para sobrar altura ao jogo e aos controles */
+@media (max-width: 680px) {
+  .hs-topo { padding: 4px 10px; padding-top: calc(4px + env(safe-area-inset-top)); }
+  .hs-topo-marca { gap: 8px; }
+  .hs-topo-marca img { width: 26px; padding: 2px; border-radius: 6px; }
+  .hs-topo-marca strong { font-size: .85rem; }
+  .hs-topo-marca small { display: none; }
+  .hs-topo-link { display: none; }
+  .hs-rodape { padding: 5px 10px calc(6px + env(safe-area-inset-bottom)); font-size: .66rem; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hs-tela, .hs-btn { transition: none !important; animation: none !important; }
