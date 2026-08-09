@@ -79,10 +79,23 @@
 .hs-sub { color: #5b6b7a; font-size: clamp(.85rem, 2.4vw, .95rem); margin: 0 0 18px; }
 .hs-card label { display: block; font-weight: 700; font-size: clamp(.82rem, 2.3vw, .9rem); margin: 12px 0 6px; }
 .hs-card .hs-opc { font-weight: 400; color: #5b6b7a; }
+/* Os jogos aplicam `* { user-select: none }`, o que impede o clique de dar foco
+   nos campos de texto. Aqui a seleção é devolvida explicitamente ao cadastro. */
+.hs-tela, .hs-tela * {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+.hs-card input, .hs-card label, .hs-card p, .hs-card h2 {
+  -webkit-user-select: text;
+  user-select: text;
+}
 .hs-card input {
   width: 100%; box-sizing: border-box; padding: 12px 14px;
   border: 2px solid var(--hs-borda); border-radius: 12px;
   font-family: inherit; font-size: 1rem; background: #fbfdff; color: var(--hs-tinta);
+  pointer-events: auto;
+  touch-action: manipulation;
+  cursor: text;
 }
 .hs-card input:focus { outline: none; border-color: var(--hs-azul-claro); background: #fff; }
 .hs-erro { display: block; color: var(--hs-vermelho); font-size: .8rem; margin-top: 5px; font-weight: 600; }

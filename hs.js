@@ -156,6 +156,20 @@
       const tela = document.getElementById('hs-cadastro');
       tela.classList.remove('hidden');
       const form = document.getElementById('hs-form');
+
+      // Os jogos usam `* { user-select: none }` e capturam teclado no window.
+      // Sem isto, o clique não dá foco ao campo e o jogador não consegue digitar.
+      const campos = ['hs-nome', 'hs-email', 'hs-empresa'].map(function (id) { return document.getElementById(id); });
+      campos.forEach(function (campo) {
+        if (campo.dataset.hsFoco) return;
+        campo.dataset.hsFoco = '1';
+        ['mousedown', 'touchstart', 'pointerdown'].forEach(function (evt) {
+          campo.addEventListener(evt, function () { setTimeout(function () { campo.focus(); }, 0); });
+        });
+        // impede que o jogo receba as teclas digitadas no cadastro
+        campo.addEventListener('keydown', function (ev) { ev.stopPropagation(); });
+      });
+      setTimeout(function () { campos[0].focus(); }, 60);
       form.onsubmit = function (ev) {
         ev.preventDefault();
         const nome = document.getElementById('hs-nome').value.trim();
