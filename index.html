@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forca SSMA - Saúde, Segurança e Meio Ambiente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="hs.css?v=1">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#0b3d6b">
+  <meta name="description" content="Forca SSMA: jogo gratuito de saúde, segurança e meio ambiente — Hora da Segurança.">
+  <script>
+    window.HS_CONFIG = {
+      treinamento: 'Forca SSMA',
+      titulo: 'Forca SSMA',
+      subtitulo: 'Saúde, segurança e meio ambiente · gratuito'
+    };
+  </script>
+  <script src="hs.js?v=1"></script>
+</head>
+<body>
+  <div id="app-container">
+    <!-- Header HUD Bar -->
+    <header id="game-hud" class="glass-header">
+      <div class="hud-left">
+        <span class="app-logo">🛡️ Forca SSMA</span>
+        <div id="category-badge" class="badge-cat sst">Segurança no Trabalho</div>
+      </div>
+
+      <div class="hud-center">
+        <div class="stat-pill">
+          <span class="pill-label">Pontos:</span>
+          <span id="hud-score" class="pill-val">0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="pill-label">Sequência:</span>
+          <span id="hud-streak" class="pill-val">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <button id="btn-sound" class="icon-btn" title="Alternar Som">🔊</button>
+        <button id="btn-restart-game" class="icon-btn" title="Reiniciar Partida">🔄</button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="game-main">
+      <!-- Upper Section: Gallows Canvas + Question Clue Card -->
+      <section class="game-stage">
+        <!-- Gallows Canvas Container -->
+        <div class="canvas-card glass-card">
+          <div class="error-badge">Erros: <span id="error-count">0</span> / 6</div>
+          <canvas id="gallows-canvas" width="280" height="240"></canvas>
+        </div>
+
+        <!-- Clue Question Card -->
+        <div class="clue-card glass-card">
+          <div class="clue-header">
+            <span class="clue-icon">❓</span>
+            <h3>Desafio SSMA</h3>
+          </div>
+          <p id="clue-text" class="clue-question">Carregando pergunta...</p>
+          
+          <!-- Word Slots Container -->
+          <div id="word-container" class="word-slots">
+            <!-- Dynamic Letter Boxes will be generated here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Keyboard & Action Section -->
+      <section class="keyboard-section glass-card">
+        <div id="virtual-keyboard" class="keyboard-grid">
+          <!-- A-Z Letter Buttons generated dynamically -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Educational Explanation Modal (Mensagem Orientativa em cada Erro / Fim de Rodada) -->
+    <div id="screen-explanation" class="overlay-modal hidden">
+      <div class="modal-card glass-card-heavy">
+        <div id="modal-badge" class="modal-badge-status danger">⚠️ ATENÇÃO - APRENDIZADO DE SEGURANÇA</div>
+        <h2 id="modal-title">Ops! Resposta Incorreta</h2>
+        
+        <div class="explanation-content">
+          <div class="exp-section correct-word-box">
+            <span class="exp-label">Termo Correto:</span>
+            <strong id="exp-word" class="highlight-word">EPI</strong>
+          </div>
+
+          <div class="exp-section">
+            <h4>💡 Por que esta norma/prática é fundamental?</h4>
+            <p id="exp-why">Explicação do porquê a norma existe...</p>
+          </div>
+
+          <div class="exp-section">
+            <h4>🛡️ Como aplicar a forma correta na prática?</h4>
+            <p id="exp-how">Como proceder com segurança...</p>
+          </div>
+        </div>
+
+        <button id="btn-next-question" class="btn-primary glow-btn">
+          ▶️ CONTINUAR A PARTIDA
+        </button>
+      </div>
+    </div>
+
+    <!-- Start / Menu Overlay -->
+    <div id="screen-menu" class="overlay-modal active">
+      <div class="modal-card glass-card-heavy center-menu">
+        <div class="menu-header">
+          <span class="hero-icon">🛡️🌱👷</span>
+          <h1>Forca SSMA</h1>
+          <p class="subtitle">Saúde, Segurança no Trabalho e Meio Ambiente</p>
+        </div>
+
+        <div class="menu-intro-box">
+          <h3>Como Funciona:</h3>
+          <ul>
+            <li>🎯 <strong>Adivinhe o termo de SSMA</strong> com base na pergunta apresentada.</li>
+            <li>⚠️ <strong>Cada erro adiciona uma parte</strong> do operador na forca (máximo de 6 erros).</li>
+            <li>💡 <strong>Receba explicações técnicas imediatas</strong> sobre a forma correta e o porquê de cada norma e procedimento!</li>
+          </ul>
+        </div>
+
+        <button id="btn-start" class="btn-primary glow-btn">
+          ▶️ COMECAR DESAFIO DE SSMA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
