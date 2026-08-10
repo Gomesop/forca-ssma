@@ -532,4 +532,52 @@ html, body {
     height: 38px;
     font-size: 1.1rem;
   }
+
+  /* O teclado é o único jeito de jogar: ele fica ancorado embaixo e nunca encolhe.
+     Quem cede altura em tela curta é a forca, que rola junto com a pergunta. */
+  #app-container { padding: 8px 10px; }
+  #game-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 6px 0;
+    gap: 8px;
+  }
+  .game-stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-rows: auto 1fr;
+  }
+  .keyboard-section { flex: 0 0 auto; }
+
+  /* Dentro do card, só o enunciado rola. A forca fica em cima e os quadrinhos
+     da palavra ficam colados no teclado, sempre visíveis. */
+  .clue-card { min-height: 0; }
+  #clue-text {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+  .word-slots { flex: 0 0 auto; }
+}
+
+/* Telas curtas (celular deitado ou aparelho pequeno): compacta tudo
+   para as 4 fileiras de letras continuarem inteiras dentro da tela. */
+@media (max-width: 680px) and (max-height: 700px) {
+  /* o nome do jogo já aparece na faixa da Hora da Segurança, logo acima */
+  .app-logo { display: none; }
+  #game-hud { padding: 5px 8px; }
+  .badge-cat { font-size: .68rem; padding: 3px 8px; }
+  .stat-pill { font-size: .72rem; padding: 3px 8px; }
+  .canvas-card { max-height: 104px; padding: 6px; }
+  #gallows-canvas { max-height: 92px; }
+  /* o título do card come uma linha inteira do enunciado */
+  .clue-header { display: none; }
+  .clue-card { padding: 10px 12px; }
+  /* o enunciado é a pergunta: garante ao menos três linhas antes de rolar */
+  #clue-text { min-height: 3.2em; font-size: .92rem; }
+  .keyboard-section { padding: 8px; }
+  .keyboard-grid { gap: 4px; }
+  .key-btn { height: 34px; font-size: .92rem; border-radius: 8px; }
+  .letter-slot { width: 26px; height: 32px; font-size: 1rem; }
 }
