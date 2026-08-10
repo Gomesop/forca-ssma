@@ -281,6 +281,9 @@
       enviarPlanilha({ nome: nome, email: email, modo: empresa, etapa: 'Inscrição' });
       tela.classList.add('hidden');
       document.activeElement && document.activeElement.blur();
+      // a partir daqui o jogador está jogando: no celular o rodapé sai da frente
+      document.body.classList.add('hs-jogando');
+
       const cb = estado.aoLiberar;
       estado.aoLiberar = null;
       if (cb) cb();

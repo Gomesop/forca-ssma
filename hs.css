@@ -193,6 +193,10 @@ body > #app-container {
   .hs-topo-marca small { display: none; }
   .hs-topo-link { display: none; }
   .hs-rodape { padding: 5px 10px calc(6px + env(safe-area-inset-bottom)); font-size: .66rem; gap: 6px; }
+
+  /* durante a partida o rodapé sai da frente: no celular ele roubava espaço
+     e ficava colado nos controles de toque */
+  body.hs-jogando .hs-rodape { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hs-tela, .hs-btn { transition: none !important; animation: none !important; }
